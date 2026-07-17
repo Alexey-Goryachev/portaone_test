@@ -47,14 +47,14 @@ def main():
                 invalid_lines_count += 1
 
     if not valid_fragments:
-        print("\n[Помилка]: Файл не містить жодного коректного 6-значного числа!")
+        print("\n[Помилка]: Файл не містить жодного коректного числа (мають бути від 4 знаків та містити лише цифри)!")
         input("\nНатиснути Enter для виходу...")
         return
 
     total_count = len(valid_fragments)
     print(f"\n[Інфо]: Успішно завантажено фрагментів: {total_count}")
     if invalid_lines_count > 0:
-        print(f"[Увага]: Пропущено некоректних рядків (не 6 цифр): {invalid_lines_count}")
+        print(f"[Увага]: Пропущено некоректних рядків (мають бути від 4 знаків та містити лише цифри): {invalid_lines_count}")
     print("-" * 50)
     
     # 3. Intelligent engine selection
@@ -65,7 +65,7 @@ def main():
         print("                   точний DFS перебір для пошуку 100% максимуму")
         print("Зачекайте, будь ласка, йде розрахунок ...")
         
-        result_puzzle, chain_len = run_exact_dfs(fragments)
+        result_puzzle, chain_len = run_exact_dfs(valid_fragments)
         engine_used = "Точний DFS (Глобальний максимум)"
     else:
         print(f"[Вибір алгоритму]: Об'єм данних високий ({total_count} шт.). Точний DFS может зависнути.")
@@ -73,7 +73,7 @@ def main():
         print("Обчислення оптимального ланцюжка методом Look-ahead розвилок...")
         
         # We launch with a depth of analysis of 3 steps
-        result_puzzle, chain_len = run_fast_eulerian(fragments, depth=4)
+        result_puzzle, chain_len = run_fast_eulerian(valid_fragments, depth=4)
         engine_used = "Швидкий Ейлерів гібрид (Look-ahead евристика)"
         
     end_time = time.time()
