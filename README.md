@@ -28,8 +28,8 @@ The console-based execution pipeline (`main_app.py`) is written in **pure Python
 
 1. **Clone the repository:**
    ```bash
-   git clone <your-repository-url>
-   cd <repository-folder>
+   git clone https://github.com/Alexey-Goryachev/portaone_test.git
+   cd portaone_test
    ```
 2. **Run the script:**
 
@@ -59,4 +59,3 @@ The console-based execution pipeline (`main_app.py`) is written in **pure Python
    ```bash
    poetry run streamlit run web_app.py
    ```
-   
