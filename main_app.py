@@ -55,7 +55,7 @@ def main():
         print("Обчислення оптимального ланцюжка методом Look-ahead розвилок...")
         
         # We launch with a depth of analysis of 3 steps
-        result_puzzle, chain_len = run_fast_eulerian(fragments, depth=3)
+        result_puzzle, chain_len = run_fast_eulerian(fragments, depth=4)
         engine_used = "Швидкий Ейлерів гібрид (Look-ahead евристика)"
         
     end_time = time.time()
