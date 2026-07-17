@@ -32,11 +32,29 @@ def main():
         return
 
     # 2. Reading data
+    valid_fragments = []
+    invalid_lines_count = 0
+
     with open(file_path, 'r', encoding='utf-8') as f:
-        fragments = [line.strip() for line in f if line.strip()]
-        
-    total_count = len(fragments)
+        for line_num, line in enumerate(f, 1):
+            cleaned = line.strip()
+            if not cleaned:
+                continue
+            
+            if len(cleaned) >= 6 and cleaned.isdigit():
+                valid_fragments.append(cleaned)
+            else:
+                invalid_lines_count += 1
+
+    if not valid_fragments:
+        print("\n[Помилка]: Файл не містить жодного коректного 6-значного числа!")
+        input("\nНатиснути Enter для виходу...")
+        return
+
+    total_count = len(valid_fragments)
     print(f"\n[Інфо]: Успішно завантажено фрагментів: {total_count}")
+    if invalid_lines_count > 0:
+        print(f"[Увага]: Пропущено некоректних рядків (не 6 цифр): {invalid_lines_count}")
     print("-" * 50)
     
     # 3. Intelligent engine selection

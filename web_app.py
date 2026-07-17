@@ -15,6 +15,8 @@ LANGUAGES = {
         "source_upload": "📤 Upload Custom File (.txt)",
         "uploader_label": "Upload a .txt file with fragments",
         "success_load": "Successfully loaded fragments: **{}**",
+        "warning_skipped": "⚠️ Skipped **{}** invalid lines (must be at least 4 digits long and contain only numbers).",
+        "error_no_valid_data": "❌ Error: The file does not contain any valid digits (minimum 4 characters per line)!",
         "btn_run": "Run Computations",
         "spinner": "Calculating, please wait...",
         "engine_dfs": "🤖 Exact DFS selected (calculating global maximum)",
@@ -39,6 +41,8 @@ LANGUAGES = {
         "source_upload": "📤 Завантажити власний файл (.txt)",
         "uploader_label": "Завантажте .txt файл із фрагментами",
         "success_load": "Успішно завантажено фрагментів: **{}**",
+        "warning_skipped": "⚠️ Пропущено **{}** некоректних рядків (мають бути від 4 знаків та містити лише цифри).",
+        "error_no_valid_data": "❌ Помилка: Файл не містить жодного коректного числа (мінімум 4 цифри в рядку)!",
         "btn_run": "Запустити обчислення",
         "spinner": "Йде розрахунок, будь ласка, зачекайте...",
         "engine_dfs": "🤖 Обрано точний DFS (розрахунок глобального максимуму)",
@@ -83,13 +87,34 @@ data_source = st.radio(
 fragments = []
 file_ready = False
 
+def validate_data(raw_lines):
+    valid_list = []
+    invalid_count = 0
+    for line in raw_lines:
+        cleaned = line.strip()
+        if not cleaned:
+            continue
+        if len(cleaned) >= 4 and cleaned.isdigit():
+            valid_list.append(cleaned)
+        else:
+            invalid_count += 1
+    return valid_list, invalid_count
+
 if data_source == "demo":
     demo_path = os.path.join("data", "source.txt")
     if os.path.exists(demo_path):
         with open(demo_path, "r", encoding="utf-8") as f:
-            fragments = [line.strip() for line in f if line.strip()]
-        st.info(t["success_load"].format(len(fragments)))
-        file_ready = True
+            raw_lines = f.readlines()
+        
+        fragments, skipped = validate_data(raw_lines)
+        
+        if fragments:
+            st.info(t["success_load"].format(len(fragments)))
+            if skipped > 0:
+                st.warning(t["warning_skipped"].format(skipped))
+            file_ready = True
+        else:
+            st.error(t["error_no_valid_data"])
     else:
         st.error(t["error_no_demo"])
 
@@ -97,9 +122,17 @@ else:
     uploaded_file = st.file_uploader(t["uploader_label"], type=["txt"])
     if uploaded_file is not None:
         bytes_data = uploaded_file.read()
-        fragments = [line.strip() for line in bytes_data.decode("utf-8", errors="ignore").split("\n") if line.strip()]
-        st.info(t["success_load"].format(len(fragments)))
-        file_ready = True
+        raw_lines = bytes_data.decode("utf-8", errors="ignore").split("\n")
+        
+        fragments, skipped = validate_data(raw_lines)
+        
+        if fragments:
+            st.info(t["success_load"].format(len(fragments)))
+            if skipped > 0:
+                st.warning(t["warning_skipped"].format(skipped))
+            file_ready = True
+        else:
+            st.error(t["error_no_valid_data"])
 
 # 4. Calculation start button
 if file_ready:
