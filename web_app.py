@@ -114,7 +114,7 @@ if file_ready:
                 result_puzzle, chain_len = run_exact_dfs(fragments)
             else:
                 st.caption(t["engine_euler"])
-                result_puzzle, chain_len = run_fast_eulerian(fragments, depth=3)
+                result_puzzle, chain_len = run_fast_eulerian(fragments, depth=4)
                 
             end_time = time.time()
             

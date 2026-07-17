@@ -1,2 +1,5 @@
 generate_data.py
 large_source.txt
+
+**/__pycache__/
+*.pyc
